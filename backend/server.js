@@ -1,8 +1,8 @@
-const express = require('express');
+const express = require('express');                   //'imports' express from your modules
 const cors = require('cors');
 const mongoose = require('mongoose');
 
-require('dotenv').config();
+require('dotenv').config();                           //to keep environment variables private
 
 const app = express();
 const port = process.env.PORT || 5000;

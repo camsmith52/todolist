@@ -1,29 +1,37 @@
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import React, { useState, useEffect } from "react";
-import ListOfTodos from "./ListOfTodos";
 
-const MakeToDo = () => {
+const EditTodos = () => {
+  //State
   const [text, setText] = useState("");
   const [todos, setTodos] = useState([]);
-  // console.log(text)
 
+  //Hook
   useEffect(() => {
+    const urlParams = window.location.href.split("/");
+    const ID = urlParams[urlParams.length - 1];
+
     axios
-      .get("http://localhost:5000/todo")
-      .then((res) => setTodos(res.data))
+      .get(`http://localhost:5000/todo/${ID}`)
+      .then((res) => {
+        setTodos(res.data);
+        setText(res.data.todoitem);
+      })
       .catch((err) => console.log("error"));
   }, []);
 
   const onSubmit = (e) => {
     e.preventDefault();
-    setTodos([...todos, { todoitem: text }]);
 
     const jsonPost = {
       todoitem: text,
     };
 
+    const urlParams = window.location.href.split("/");
+    const ID = urlParams[urlParams.length - 1];
+
     axios
-      .post("http://localhost:5000/todo/add", jsonPost)
+      .post("http://localhost:5000/todo/update/" + ID, jsonPost)
       .then((res) => res.data);
 
     setText("");
@@ -31,29 +39,21 @@ const MakeToDo = () => {
     window.location = "/";
   };
 
-  const deleteAll = () => {
-    setTodos([]);
-  };
-  console.log(todos);
   return (
     <div>
-      <h3>Enter to do:</h3>
+      <h3>Edit to do:</h3>
       <form onSubmit={onSubmit}>
         <div className="ui input">
           <input
             type="text"
-            placeholder="Enter to do"
+            placeholder="Edit to do"
             value={text}
             onChange={(e) => setText(e.target.value)}
           />
         </div>
       </form>
-      <ListOfTodos todos={todos} setTodos={setTodos} />
-      <button onClick={deleteAll} style={{ marginTop: 15 }}>
-        Clear all to do's
-      </button>
     </div>
   );
 };
 
-export default MakeToDo;
+export default EditTodos;

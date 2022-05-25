@@ -23,4 +23,25 @@ router.route('/:id').delete((req,res)=>{
     .catch(err=>res.status(400).json('Error:' + err))
 })
 
+router.route('/:id').get((req,res)=>{
+    Todo.findById(req.params.id)
+    .then(exercise=>res.json(exercise))
+    .catch(err=>res.status(400).json('Error:' + err))
+})
+
+router.route('/update/:id').post((req,res)=>{
+    Todo.findById(req.params.id)
+    .then(todo=>{
+    todo.todoitem = req.body.todoitem;
+    
+    
+    todo.save()                                         //only update/editing this on so no need to create a new object
+    .then(()=>res.json('Todo updated!'))
+    .catch(err=>res.status(400).json('Error:' + err))
+
+    })
+    .catch(err=>res.status(400).json('Error:' + err))
+    
+})
+
 module.exports = router;

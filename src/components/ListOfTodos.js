@@ -1,39 +1,39 @@
-import React from 'react'
-import axios from 'axios';
+import React from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
-const ListOfTodos = ({todos, setTodos}) => {
+const ListOfTodos = ({ todos, setTodos }) => {
+  const deleteTodo = (id) => {
+    axios
+      .delete(`http://localhost:5000/todo/${id}`) //path needs to match the backend route - see todo.js /todo/:id
+      .then((response) => {
+        console.log(response.data);
+      });
 
-const deleteTodo = (todo)=>{
+    setTodos(todos.filter((item) => item._id !== id));
+  };
 
-    axios.delete('http://localhost:5000/')
-    .then(response=>{console.log(response.data)});
+  const list = todos.map((todo) => {
+    return (
+      <div className="ui middle aligned divided list" key={todo._id}>
+        <div className="item" style={{ backgroundColor: "lightgrey" }}>
+          <div className="right floated content">
+            <Link className="ui button" to={"/edit/" + todo._id}>
+              Edit
+            </Link>
+            <div className="ui button" onClick={() => deleteTodo(todo._id)}>
+              Delete
+            </div>
+          </div>
+          <div className="content" style={{ fontSize: "2em" }}>
+            {todo.todoitem}
+          </div>
+        </div>
+      </div>
+    );
+  });
 
-    setTodos(todos.filter(item=>item!==todo))
-}
+  return <div style={{ marginTop: "10px" }}>{list}</div>;
+};
 
-
-const list = todos.map((todo,index)=>{
-    return <div className="ui middle aligned divided list" key={index}>
-  <div className="item" style={{backgroundColor: 'lightgrey'}}>
-    <div className="right floated content">
-      <div className="ui button" onClick={()=>deleteTodo(todo,index)}>Delete</div>
-    </div>
-    <div className="content" style={{fontSize:'2em'}}>
-      {todo}
-    </div>
-    </div>
-  </div>
-  
-});
-  
-
-    
-// console.log(todos)
-return (
-    <div style={{marginTop: '10px'}}>
-        {list}
-    </div>
-  )
-}
-
-export default ListOfTodos
+export default ListOfTodos;
